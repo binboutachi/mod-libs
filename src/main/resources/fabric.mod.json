@@ -1,0 +1,22 @@
+{
+	"schemaVersion": 1,
+	"id": "tayomono",
+	"version": "${version}",
+	"name": "Mod libs",
+	"description": "Common binboutachi code",
+	"authors": [
+		"binboutachi"
+	],
+	"license": "All rights reserved.",
+	"icon": "assets/libs/icon.png",
+	"environment": "*",
+	"depends": {
+		"fabricloader": ">=0.16.4",
+		"minecraft": ">=1.16.5",
+		"java": ">=8",
+		"fabric": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
