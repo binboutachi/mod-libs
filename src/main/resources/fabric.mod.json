@@ -10,6 +10,11 @@
 	"license": "All rights reserved.",
 	"icon": "assets/libs/icon.png",
 	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.binboutachi.libs.Entry"
+		]
+	},
 	"depends": {
 		"fabricloader": ">=0.16.4",
 		"minecraft": ">=1.16.5",

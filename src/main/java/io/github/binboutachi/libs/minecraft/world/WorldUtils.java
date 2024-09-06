@@ -19,6 +19,7 @@ import net.minecraft.world.biome.Biome;
 public final class WorldUtils {
     private WorldUtils() {}
     private static Logger LOGGER = LogManager.getLogger(WorldUtils.class);
+    private static MinecraftClient client;
     /**
      * If the current world is a single-player world, return its save
      * path, if not, return {@code null}.
