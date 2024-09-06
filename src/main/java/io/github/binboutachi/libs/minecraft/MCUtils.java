@@ -14,6 +14,7 @@ public final class MCUtils {
     
 	private static Logger LOGGER = LogManager.getLogger(MCUtils.class);
     private static final File runDir = new File("").getAbsoluteFile();
+    public static final MinecraftClient client = MinecraftClient.getInstance();
 
     /**
      * Returns whether the player currently plays single-player.
@@ -57,5 +58,13 @@ public final class MCUtils {
         try(MinecraftClient client = MinecraftClient.getInstance()) {
             client.player.sendMessage(Text.of(msg), false);
         } catch (Exception e) {}
+    }
+    /**
+     * Shorthand for calling
+     * {@code MinecraftClient.getInstance()}
+     * @return the {@code MinecraftClient} instance
+     */
+    public static MinecraftClient client() {
+        return MinecraftClient.getInstance();
     }
 }

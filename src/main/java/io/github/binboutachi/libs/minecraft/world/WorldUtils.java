@@ -75,10 +75,10 @@ public final class WorldUtils {
     /**
      * The current world. Might be {@code null} if not connected
      * to a (integrated) server. 
+     * <p>Shorthand for {@code MinecraftClient.getInstance().world}.</p>
      */
-	@SuppressWarnings("resource")
     public static net.minecraft.world.World cWorld() {
-		return MinecraftClient.getInstance().world;
+        return MCUtils.client.world;
 	}
     public static String getBiomeNameByPos(net.minecraft.util.math.Vec3d pos) {
         Text biomeName = Text.of(Util.createTranslationKey("biome", getBiomeIdByPos(pos)));
