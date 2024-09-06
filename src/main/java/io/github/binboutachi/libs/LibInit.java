@@ -39,8 +39,11 @@ public class LibInit implements ModInitializer {
 		LOGGER.info("MCUtils.client: " + MCUtils.client);
 		LOGGER.info("MinecraftClient.getInstance(): " + MinecraftClient.getInstance());
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-			if(WorldUtils.isNthTick(20))
-				MCUtils.sendLocalChatMessage("tick");
+			if(!WorldUtils.isNthTick(20))
+				return;
+			if(client.player == null)
+				return;
+			MCUtils.sendLocalChatMessage("Biome name translated: " + MCUtils.getTranslatedFromTypeAndId("biome", WorldUtils.getBiomeIdByPos(client.player.getBlockPos())));
 		});
 	}
 }
