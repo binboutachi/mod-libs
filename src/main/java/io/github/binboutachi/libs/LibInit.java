@@ -11,7 +11,7 @@ import io.github.binboutachi.libs.minecraft.MCUtils;
 import io.github.binboutachi.libs.minecraft.world.WorldUtils;
 
 
-public class Entry implements ModInitializer {
+public class LibInit implements ModInitializer {
 	public static final String MOD_ID = "mod-libs";
 
 	// This logger is used to write text to the console and the log file.
@@ -32,11 +32,15 @@ public class Entry implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		
-        LOGGER.info("MCUtils.client: " + MCUtils.client);
-        LOGGER.info("MinecraftClient.getInstance(): " + MinecraftClient.getInstance());
-        ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-            if(WorldUtils.isNthTick(20))
-                MCUtils.sendLocalChatMessage("tick");
-        });
+		LOGGER.info("Loaded binboutachi mod-libs.");
+		if(!DEBUG_ENABLED) {
+			return;
+		}
+		LOGGER.info("MCUtils.client: " + MCUtils.client);
+		LOGGER.info("MinecraftClient.getInstance(): " + MinecraftClient.getInstance());
+		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
+			if(WorldUtils.isNthTick(20))
+				MCUtils.sendLocalChatMessage("tick");
+		});
 	}
 }

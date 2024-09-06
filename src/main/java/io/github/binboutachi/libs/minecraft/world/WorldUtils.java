@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.github.binboutachi.libs.Entry;
+import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.minecraft.MCUtils;
 
 import net.minecraft.text.Text;
@@ -27,7 +27,7 @@ public final class WorldUtils {
      */
     public static Path getCurrentWorldSavePath() {
         if(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer()) {
-            if(Entry.DEBUG_ENABLED)
+            if(LibInit.DEBUG_ENABLED)
                 LOGGER.debug("Successfully got world save path");
             return MCUtils.client.world.getServer().getSavePath(WorldSavePath.ROOT);
         }
