@@ -7,8 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.minecraft.MCUtils;
-
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.WorldSavePath;
@@ -26,13 +27,14 @@ public final class WorldUtils {
      * single-player world, {@code null} otherwise.
      */
     public static Path getCurrentWorldSavePath() {
-        if(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer()) {
+        if(!(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer())) {
             if(LibInit.DEBUG_ENABLED)
-                LOGGER.debug("Successfully got world save path");
-            return MCUtils.client.world.getServer().getSavePath(WorldSavePath.ROOT);
+                LOGGER.warn("Called getCurrentWorldSavePath() when no connection to a (internal) server was active.");
+            return null;
         }
-        LOGGER.warn("Called getCurrentWorldSavePath() when no connection to a (internal) server was active.");
-        return null;
+        if(LibInit.DEBUG_ENABLED)
+            LOGGER.debug("Successfully got world save path");
+        return MCUtils.client.world.getServer().getSavePath(WorldSavePath.ROOT);
     }
     /**
 	 * Returns {@code true} once every {@code nthTick} on the currently
@@ -56,13 +58,17 @@ public final class WorldUtils {
      * ticks processed so far by the world, {@code false} if not
 	 */
 	public static boolean isNthTick(int nthTick) {
-		// try (ClientWorld world = MCUtils.client.world) {
+        if(!MCUtils.isConnectedToServer()) {
+            if(LibInit.DEBUG_ENABLED) {
+                LOGGER.warn("Caught unprepared isNthTick() call without a server connection.");
+                return false;
+            }
+            throw new IllegalStateException("Called world-dependent isNthTick() while not connected to a (internal) server.");
+        }
         if(MCUtils.isSinglePlayerServer()) {
             return MCUtils.client.getServer().getTicks() % nthTick == 0;
-        } else {
-            //LOGGER.info("socket address: " + ((InetSocketAddress) thiz.networkHandler.getConnection().getAddress()));
-            return MCUtils.client.world.getTime() % nthTick == 0;
         }
+        return MCUtils.client.world.getTime() % nthTick == 0;
 	}
     /**
      * The current world. Might be {@code null} if not connected
@@ -72,18 +78,15 @@ public final class WorldUtils {
     public static net.minecraft.world.World cWorld() {
         return MCUtils.client.world;
 	}
-    public static String getBiomeNameByPos(net.minecraft.util.math.Vec3d pos) {
-        Text biomeName = Text.of(Util.createTranslationKey("biome", getBiomeIdByPos(pos)));
-        return biomeName.getString();
-    }
-    public static Identifier getBiomeIdByPos(net.minecraft.util.math.Vec3d pos) {
-        java.util.Optional<RegistryKey<Biome>> biomeHolder = cWorld().getBiomeKey(new BlockPos(pos.x, pos.y, pos.z));
+    public static Identifier getBiomeIdByPos(BlockPos pos) {
+        java.util.Optional<RegistryKey<Biome>> biomeHolder = cWorld().getBiomeKey(pos);
         try {
             return biomeHolder.get().getValue();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("Failed in getting identifier of the biome; the BiomeHolder had no key contained to retrieve.");
         }
+        LOGGER.warn("Returned placeholder biome (minecraft:plains).");
         return new Identifier("minecraft", "plains");
     }
     public static Biome getBiomeByPos(BlockPos pos) {

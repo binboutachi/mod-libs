@@ -6,7 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
     
 public final class MCUtils {
@@ -14,6 +17,11 @@ public final class MCUtils {
     
 	private static Logger LOGGER = LogManager.getLogger(MCUtils.class);
     private static final File runDir = new File("").getAbsoluteFile();
+    /**
+     * This field is set to {@code MinecraftClient.getInstance()}
+     * on class initialization. Useful for being shorter than
+     * the alternative function call.
+     */
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
     /**
@@ -39,8 +47,8 @@ public final class MCUtils {
      * if not
      */
     public static boolean isConnectedToServer() {
-        return MinecraftClient.getInstance() != null && MinecraftClient.getInstance().getNetworkHandler() != null
-            && MinecraftClient.getInstance().getNetworkHandler().getConnection() != null;
+        return client != null && client.getNetworkHandler() != null
+            && client.getNetworkHandler().getConnection() != null;
     }
     /**
      * Gets the current run directory. If no Minecraft instance
@@ -55,16 +63,9 @@ public final class MCUtils {
             LOGGER.debug(String.format("Could not send message %s to local chat because there is no active connection.", msg));
             return;
         }
-        try(MinecraftClient client = MinecraftClient.getInstance()) {
-            client.player.sendMessage(Text.of(msg), false);
-        } catch (Exception e) {}
+        client.player.sendMessage(Text.of(msg), false);
     }
-    /**
-     * Shorthand for calling
-     * {@code MinecraftClient.getInstance()}
-     * @return the {@code MinecraftClient} instance
-     */
-    public static MinecraftClient client() {
-        return MinecraftClient.getInstance();
+    public static String getTranslatedFromTypeAndId(String type, Identifier id) {
+        return I18n.translate(Util.createTranslationKey(type, id));
     }
 }

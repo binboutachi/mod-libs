@@ -1,15 +1,9 @@
 package io.github.binboutachi.libs;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import io.github.binboutachi.libs.minecraft.MCUtils;
-import io.github.binboutachi.libs.minecraft.world.WorldUtils;
-
 
 public class LibInit implements ModInitializer {
 	public static final String MOD_ID = "mod-libs";
