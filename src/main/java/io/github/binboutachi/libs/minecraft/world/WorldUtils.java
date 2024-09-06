@@ -5,9 +5,11 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.binboutachi.libs.Entry;
 import io.github.binboutachi.libs.minecraft.MCUtils;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -19,7 +21,6 @@ import net.minecraft.world.biome.Biome;
 public final class WorldUtils {
     private WorldUtils() {}
     private static Logger LOGGER = LogManager.getLogger(WorldUtils.class);
-    private static MinecraftClient client;
     /**
      * If the current world is a single-player world, return its save
      * path, if not, return {@code null}.
@@ -27,15 +28,12 @@ public final class WorldUtils {
      * single-player world, {@code null} otherwise.
      */
     public static Path getCurrentWorldSavePath() {
-        try(MinecraftClient client = MinecraftClient.getInstance()) {
-            // ClientWorld clientWorld = client.world;
-            if(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer()) {
-                LOGGER.info("Successfully got world save path");
-                return client.getServer().getSavePath(WorldSavePath.ROOT);
-            }
-        } catch(Exception e) {
-            LOGGER.warn("IOException in getCurrentWorldSavePath()");
+        if(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer()) {
+            if(Entry.DEBUG_ENABLED)
+                LOGGER.debug("Successfully got world save path");
+            return MCUtils.client.world.getServer().getSavePath(WorldSavePath.ROOT);
         }
+        LOGGER.warn("Called getCurrentWorldSavePath() when no connection to a (internal) server was active.");
         return null;
     }
     /**
@@ -60,18 +58,13 @@ public final class WorldUtils {
      * ticks processed so far by the world, {@code false} if not
 	 */
 	public static boolean isNthTick(int nthTick) {
-		try (MinecraftClient client = MinecraftClient.getInstance()) {
-			if(MCUtils.isSinglePlayerServer()) {
-				return client.getServer().getTicks() % nthTick == 0;
-			} else {
-				//LOGGER.info("socket address: " + ((InetSocketAddress) thiz.networkHandler.getConnection().getAddress()));
-				return client.world.getTime() % nthTick == 0;
-			}
-		} catch(Exception e) {
-			LOGGER.error(e.getMessage());
-            LOGGER.error("Failed to calculate the modular of the current tick.");
-		}
-        return false;
+		// try (ClientWorld world = MCUtils.client.world) {
+        if(MCUtils.isSinglePlayerServer()) {
+            return MCUtils.client.getServer().getTicks() % nthTick == 0;
+        } else {
+            //LOGGER.info("socket address: " + ((InetSocketAddress) thiz.networkHandler.getConnection().getAddress()));
+            return MCUtils.client.world.getTime() % nthTick == 0;
+        }
 	}
     /**
      * The current world. Might be {@code null} if not connected
