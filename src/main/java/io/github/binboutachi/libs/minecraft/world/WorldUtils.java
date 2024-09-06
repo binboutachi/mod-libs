@@ -1,14 +1,13 @@
-package io.github.binboutachi.libs.world;
-
-import static io.github.binboutachi.libs.Gadgets.*;
+package io.github.binboutachi.libs.minecraft.world;
 
 import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.binboutachi.libs.minecraft.MCUtils;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -29,7 +28,7 @@ public final class WorldUtils {
     public static Path getCurrentWorldSavePath() {
         try(MinecraftClient client = MinecraftClient.getInstance()) {
             // ClientWorld clientWorld = client.world;
-            if(isConnectedToServer() && isSinglePlayerServer()) {
+            if(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer()) {
                 LOGGER.info("Successfully got world save path");
                 return client.getServer().getSavePath(WorldSavePath.ROOT);
             }
@@ -60,12 +59,12 @@ public final class WorldUtils {
      * ticks processed so far by the world, {@code false} if not
 	 */
 	public static boolean isNthTick(int nthTick) {
-		try (ClientWorld world = client.world) {
-			if(isSinglePlayerServer()) {
+		try (MinecraftClient client = MinecraftClient.getInstance()) {
+			if(MCUtils.isSinglePlayerServer()) {
 				return client.getServer().getTicks() % nthTick == 0;
 			} else {
 				//LOGGER.info("socket address: " + ((InetSocketAddress) thiz.networkHandler.getConnection().getAddress()));
-				return world.getTime() % nthTick == 0;
+				return client.world.getTime() % nthTick == 0;
 			}
 		} catch(Exception e) {
 			LOGGER.error(e.getMessage());

@@ -1,4 +1,4 @@
-package io.github.binboutachi.libs;
+package io.github.binboutachi.libs.minecraft;
 
 import java.io.File;
 
@@ -8,22 +8,13 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
-public final class Gadgets {
-	private Gadgets() {}
-    private static Logger LOGGER = LogManager.getLogger(Gadgets.class);
-    private static final File runDir = new File("").getAbsoluteFile();
-    /**
-     * A reference to the currently active {@code MinecraftClient}
-     * instance.
-     */
-    public static MinecraftClient client;
     
-    // public static boolean isConnectedToServer() {
-    //     return AmbienceMod.instance.clientJoinDisconnectHandler().isConnectedToServer();
-    // }
-    // public static boolean isSinglePlayerServer() {
-    //     return AmbienceMod.instance.clientJoinDisconnectHandler().isClient();
-    // }
+public final class MCUtils {
+    private MCUtils() {}
+    
+	private static Logger LOGGER = LogManager.getLogger(MCUtils.class);
+    private static final File runDir = new File("").getAbsoluteFile();
+
     /**
      * Returns whether the player currently plays single-player.
      * Note that this also returns {@code false} if there is no
@@ -58,18 +49,13 @@ public final class Gadgets {
     public static File runDir() {
         return runDir;
     }
-    /**
-     * <b>Callable only after having joined a world once!</b>
-     * @return the {@code MinecraftClient} instance
-     */
-    public static net.minecraft.client.MinecraftClient minecraftClient() {
-        return client;
-    }
     public static void sendLocalChatMessage(String msg) {
         if(!isConnectedToServer()) {
             LOGGER.debug(String.format("Could not send message %s to local chat because there is no active connection.", msg));
             return;
         }
-        Gadgets.client.player.sendMessage(Text.of(msg), false);
+        try(MinecraftClient client = MinecraftClient.getInstance()) {
+            client.player.sendMessage(Text.of(msg), false);
+        } catch (Exception e) {}
     }
 }
