@@ -8,8 +8,6 @@ import org.apache.logging.log4j.Logger;
 import io.github.binboutachi.libs.Entry;
 import io.github.binboutachi.libs.minecraft.MCUtils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
