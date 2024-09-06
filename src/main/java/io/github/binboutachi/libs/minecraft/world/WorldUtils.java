@@ -94,4 +94,7 @@ public final class WorldUtils {
         }
         return new Identifier("minecraft", "plains");
     }
+    public static Biome getBiomeByPos(BlockPos pos) {
+        return cWorld().getBiome(pos);
+    }
 }
