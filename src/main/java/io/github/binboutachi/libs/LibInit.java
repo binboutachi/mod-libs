@@ -2,7 +2,6 @@ package io.github.binboutachi.libs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,8 +35,6 @@ public class LibInit implements ModInitializer {
 		if(!DEBUG_ENABLED) {
 			return;
 		}
-		LOGGER.info("MCUtils.client: " + MCUtils.client);
-		LOGGER.info("MinecraftClient.getInstance(): " + MinecraftClient.getInstance());
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 			if(!WorldUtils.isNthTick(20))
 				return;

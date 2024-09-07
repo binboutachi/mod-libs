@@ -1,17 +1,14 @@
 package io.github.binboutachi.libs.minecraft.world;
 
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.minecraft.MCUtils;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
@@ -82,12 +79,11 @@ public final class WorldUtils {
         java.util.Optional<RegistryKey<Biome>> biomeHolder = cWorld().getBiomeKey(pos);
         try {
             return biomeHolder.get().getValue();
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("Failed in getting identifier of the biome; the BiomeHolder had no key contained to retrieve.");
         }
-        LOGGER.warn("Returned placeholder biome (minecraft:plains).");
-        return new Identifier("minecraft", "plains");
+        return null;
     }
     public static Biome getBiomeByPos(BlockPos pos) {
         return cWorld().getBiome(pos);
