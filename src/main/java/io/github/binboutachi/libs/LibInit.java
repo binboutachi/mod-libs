@@ -18,6 +18,7 @@ public class LibInit implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final boolean DEBUG_ENABLED;
+	private boolean once = false;
 
 	static {
 		if(LOGGER.isDebugEnabled())
@@ -40,6 +41,10 @@ public class LibInit implements ModInitializer {
 				return;
 			if(client.player == null)
 				return;
+			if(!once) {
+				once = true;
+				MCUtils.sendLocalChatMessage("World save path: " + WorldUtils.getCurrentWorldSavePath());
+			}
 			MCUtils.sendLocalChatMessage("Biome name translated: " + MCUtils.getTranslatedFromTypeAndId("biome", WorldUtils.getBiomeIdByPos(client.player.getBlockPos())));
 		});
 	}

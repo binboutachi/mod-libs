@@ -32,7 +32,7 @@ public final class MCUtils {
      * may not work and in most cases fail with an exception,
      * depending on where your code is called from.
      * It is therefore recommended to use this in conjunction with
-     * {@link io.github.binboutachi.libs.ambiencemusic.util.Gadgets#isConnectedToServer() isConnectedToServer()}.
+     * {@link io.github.binboutachi.libs.minecraft.MCUtils#isConnectedToServer() isConnectedToServer()}.
      * @return {@code true} if single-player, {@code false} if
      * not or no connection is active
      */

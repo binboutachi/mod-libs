@@ -24,14 +24,12 @@ public final class WorldUtils {
      * single-player world, {@code null} otherwise.
      */
     public static Path getCurrentWorldSavePath() {
-        if(!(MCUtils.isConnectedToServer() && MCUtils.isSinglePlayerServer())) {
+        if(!(MCUtils.isConnectedToServer() || MCUtils.isSinglePlayerServer())) {
             if(LibInit.DEBUG_ENABLED)
-                LOGGER.warn("Called getCurrentWorldSavePath() when no connection to a (internal) server was active.");
+                LOGGER.warn("Called getCurrentWorldSavePath() when no connection to an internal server was active.");
             return null;
         }
-        if(LibInit.DEBUG_ENABLED)
-            LOGGER.debug("Successfully got world save path");
-        return MCUtils.client.world.getServer().getSavePath(WorldSavePath.ROOT);
+        return MCUtils.client.getServer().getSavePath(WorldSavePath.ROOT);
     }
     /**
 	 * Returns {@code true} once every {@code nthTick} on the currently

@@ -17,9 +17,9 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.14.2",
-		"minecraft": "1.16.5",
+		"minecraft": "1.17.x",
 		"java": ">=8",
-		"fabric": ">=0.25.4"
+		"fabric": ">=0.34.2"
 	},
 	"suggests": {
 		"another-mod": "*"
