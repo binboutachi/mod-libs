@@ -1,14 +1,9 @@
 package io.github.binboutachi.libs;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import io.github.binboutachi.libs.minecraft.MCUtils;
-import io.github.binboutachi.libs.minecraft.world.WorldUtils;
-
 
 public class LibInit implements ModInitializer {
 	public static final String MOD_ID = "mod-libs";
@@ -18,7 +13,6 @@ public class LibInit implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final boolean DEBUG_ENABLED;
-	private boolean once = false;
 
 	static {
 		if(LOGGER.isDebugEnabled())
@@ -33,19 +27,5 @@ public class LibInit implements ModInitializer {
 		// Proceed with mild caution.
 		
 		LOGGER.info("Loaded binboutachi mod-libs.");
-		if(!DEBUG_ENABLED) {
-			return;
-		}
-		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-			if(!WorldUtils.isNthTick(20))
-				return;
-			if(client.player == null)
-				return;
-			if(!once) {
-				once = true;
-				MCUtils.sendLocalChatMessage("World save path: " + WorldUtils.getCurrentWorldSavePath());
-			}
-			MCUtils.sendLocalChatMessage("Biome name translated: " + MCUtils.getTranslatedFromTypeAndId("biome", WorldUtils.getBiomeIdByPos(client.player.getBlockPos())));
-		});
 	}
 }
