@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "binbota-mod-libs",
 	"version": "${version}",
-	"name": "Mod libs",
+	"name": "Binboutachi mod libraries",
 	"description": "Common binboutachi code",
 	"authors": [
 		"binboutachi"
@@ -17,8 +17,9 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.14.2",
-		"minecraft": ">=1.16.5",
-		"java": ">=8"
+		"minecraft": "1.16.5",
+		"java": ">=8",
+		"fabric": ">=0.25.4"
 	},
 	"suggests": {
 		"another-mod": "*"
