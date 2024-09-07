@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -63,7 +63,7 @@ public final class MCUtils {
             LOGGER.debug(String.format("Could not send message %s to local chat because there is no active connection.", msg));
             return;
         }
-        client.player.sendMessage(new TranslatableText(msg), false);
+        client.player.sendMessage(Text.of(msg), false);
     }
     public static String getTranslatedFromTypeAndId(String type, Identifier id) {
         return I18n.translate(Util.createTranslationKey(type, id));

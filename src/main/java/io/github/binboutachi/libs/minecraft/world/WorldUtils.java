@@ -8,10 +8,10 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.minecraft.MCUtils;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public final class WorldUtils {
@@ -74,9 +74,9 @@ public final class WorldUtils {
         return MCUtils.client.world;
 	}
     public static Identifier getBiomeIdByPos(BlockPos pos) {
-        java.util.Optional<RegistryKey<Biome>> biomeHolder = cWorld().getBiomeKey(pos);
+        RegistryEntry<Biome> biomeHolder = cWorld().getBiome(pos);
         try {
-            return biomeHolder.get().getValue();
+            return biomeHolder.getKey().get().getValue();
         } catch (NoSuchElementException e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("Failed in getting identifier of the biome; the BiomeHolder had no key contained to retrieve.");
@@ -84,6 +84,6 @@ public final class WorldUtils {
         return null;
     }
     public static Biome getBiomeByPos(BlockPos pos) {
-        return cWorld().getBiome(pos);
+        return cWorld().getBiome(pos).value();
     }
 }
