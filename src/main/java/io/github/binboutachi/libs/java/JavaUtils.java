@@ -1,5 +1,7 @@
 package io.github.binboutachi.libs.java;
 
+import java.io.File;
+
 public final class JavaUtils {
     private JavaUtils() {}
 
@@ -15,4 +17,8 @@ public final class JavaUtils {
         }
 		return builder.toString();
 	}
+
+    public static String canonizePathString(String path) {
+        return path.replace('\\', File.separatorChar).replace('/', File.separatorChar);
+    }
 }
