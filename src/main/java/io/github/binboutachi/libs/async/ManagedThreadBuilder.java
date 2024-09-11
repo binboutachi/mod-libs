@@ -19,6 +19,7 @@ public final class ManagedThreadBuilder {
     }
     public ManagedThread buildAndStart() {
         ManagedThread mT = build();
+        mT.executeCondition.refresh();
         mT.start();
         return mT;
     }

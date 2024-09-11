@@ -6,9 +6,10 @@ import io.github.binboutachi.libs.async.conditions.ExecuteCondition;
 
 public class ManagedThread extends Thread {
     Runnable function;
-    public ExecuteCondition executeCondition;
+    ExecuteCondition executeCondition;
     Consumer<Exception> onException;
     boolean cancelled = false;
+    boolean paused = false;
 
     static final long CHECK_DELAY = 100l;
 
@@ -22,7 +23,6 @@ public class ManagedThread extends Thread {
     
     @Override
     public void run() {
-        executeCondition.refresh();
         Runnable f = () -> {
             while(!cancelled) {
                 // println("executeCondition: " + executeCondition.isReached());
@@ -45,5 +45,17 @@ public class ManagedThread extends Thread {
 
     public void cancelGracefully() {
         cancelled = true;
+    }
+    /**
+     * Pauses the {@code ExecuteCondition}.
+     */
+    public void managedPause() {
+        executeCondition.pause();
+    }
+    /**
+     * Resumes the {@code ExecuteCondition}.
+     */
+    public void managedResume() {
+        executeCondition.unpause();
     }
 }
