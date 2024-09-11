@@ -7,7 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -58,14 +60,62 @@ public final class MCUtils {
     public static File runDir() {
         return runDir;
     }
-    public static void sendLocalChatMessage(String msg) {
+    /**
+     * Sends a local (non-networked) message to the player
+     * in the specified formatting.
+     * @param type the type of formatting to use. see the
+     * {@link MessageType} enum class for available options.
+     * @param msg the message to send
+     */
+    public static void sendLocalChatMessage(MessageType type, MutableText txt) {
         if(!isConnectedToServer()) {
-            LOGGER.debug(String.format("Could not send message %s to local chat because there is no active connection.", msg));
+            LOGGER.debug(String.format("Could not send message %s to local chat because there is no active connection.", txt.toString()));
             return;
         }
-        client.player.sendMessage(Text.of(msg), false);
+        client.inGameHud.getChatHud().addMessage(textWithColor(txt, type.color));
+    }
+    /**
+     * Sends a local (non-networked) message to the player
+     * in standard formatting. Its effect is the same as
+     * if invoking {@code sendLocalChatMessage(MessageType.STANDARD, txt)}
+     * @param type the type of formatting to use. see the
+     * {@link MessageType} enum class for available options.
+     * @param msg the message to send
+     */
+    public static void sendLocalChatMessage(MessageType type, String msg) {
+        sendLocalChatMessage(type, Text.literal(msg));
+    }
+    /**
+     * Sends a local (non-networked) message to the player
+     * in standard formatting. Its effect is the same as
+     * if invoking {@code sendLocalChatMessage(MessageType.STANDARD, Text.literal(msg))}
+     * @param msg the message to send
+     */
+    public static void sendLocalChatMessage(String msg) {
+        sendLocalChatMessage(MessageType.STANDARD, Text.literal(msg));
+    }
+    /**
+     * Sends this local (non-networked) {@code MutableText}
+     * to the player.
+     * @param text the {@code MutableText} to send
+     */
+    public static void sendLocalChatMessage(MutableText text) {
+        sendLocalChatMessage(MessageType.STANDARD, text);
     }
     public static String getTranslatedFromTypeAndId(String type, Identifier id) {
         return I18n.translate(Util.createTranslationKey(type, id));
+    }
+    /**
+     * Changes the styling of the {@code text} such that
+     * its color becomes the one specified in {@code color}
+     * @param text the {@code MutableText} to modify
+     * @param color the {@code Formatting} containing the
+     * desired coloring
+     * @return {@code text} with the new coloring applied
+     */
+    public static MutableText textWithColor(MutableText text, Formatting color) {
+        var style = text.getStyle();
+        text.setStyle(style.withColor(color));
+        return text;
     }
 }

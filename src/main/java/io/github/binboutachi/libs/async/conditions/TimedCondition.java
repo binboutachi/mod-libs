@@ -1,5 +1,7 @@
 package io.github.binboutachi.libs.async.conditions;
 
+import io.github.binboutachi.libs.LibInit;
+
 public final class TimedCondition implements ExecuteCondition {
     private long delay = 0l;
     private long pauseStart = -1l;
@@ -15,8 +17,16 @@ public final class TimedCondition implements ExecuteCondition {
 
     @Override
     public boolean isReached() {
-        if(isPaused())
+        if(isPaused()) {
+            if(LibInit.DEBUG_ENABLED)
+                LOGGER.info("Paused, so TimedCondition cannot be reached.");
             return false;
+        }
+        if(LibInit.DEBUG_ENABLED)
+            LOGGER.info("isReached of TimedCondition: %b, current time: %d, timestamp: %d, delay: %d".formatted(System.currentTimeMillis() - timestamp >= delay,
+                                                                                                            System.currentTimeMillis(),
+                                                                                                            timestamp,
+                                                                                                            delay));
         return System.currentTimeMillis() - timestamp >= delay;
     }
 

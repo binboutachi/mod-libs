@@ -12,13 +12,13 @@ public class LibInit implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static final boolean DEBUG_ENABLED;
+	public static boolean DEBUG_ENABLED;
 
 	static {
 		if(LOGGER.isDebugEnabled())
 			DEBUG_ENABLED = true;
 		else
-			DEBUG_ENABLED = true;
+			DEBUG_ENABLED = false;
 	}
 	@Override
 	public void onInitialize() {
