@@ -1,6 +1,10 @@
 package io.github.binboutachi.libs.async.conditions;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public interface ExecuteCondition {
+    final Logger LOGGER = LogManager.getLogger(ExecuteCondition.class);
     // protected T condition;
     // public ExecuteCondition(T initial) {
     //     condition = initial;
