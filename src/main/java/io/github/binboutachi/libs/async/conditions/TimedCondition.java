@@ -36,7 +36,7 @@ public final class TimedCondition implements ExecuteCondition {
     }
     
     @Override
-    public void unpause() {
+    public void unpauseImpl() {
         timestamp += System.currentTimeMillis() - pauseStart;
         pauseStart = -1;
     }
