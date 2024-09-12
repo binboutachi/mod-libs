@@ -30,6 +30,8 @@ public class ManagedThread {
                 return;
             }
         }
+        if(cancelled)
+            return;
         // System.out.println("Execute condition reached.");
         function.run();
     };
