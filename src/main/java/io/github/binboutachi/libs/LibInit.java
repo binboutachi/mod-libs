@@ -2,13 +2,19 @@ package io.github.binboutachi.libs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.binboutachi.libs.async.ManagedThread;
 import io.github.binboutachi.libs.async.ManagedThreadBuilder;
 import io.github.binboutachi.libs.minecraft.MCUtils;
 import io.github.binboutachi.libs.minecraft.MessageType;
+import io.github.binboutachi.libs.minecraft.hud.HudRenderCallbackHandler;
+import io.github.binboutachi.libs.minecraft.hud.HudUtils;
+import io.github.binboutachi.libs.minecraft.hud.renderables.Renderable;
+import io.github.binboutachi.libs.minecraft.hud.renderables.Types;
 import io.github.binboutachi.libs.minecraft.world.WorldUtils;
 
 
@@ -34,7 +40,10 @@ public class LibInit implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		
+		HudRenderCallback.EVENT.register(HudRenderCallbackHandler.singleton);
+		
 		LOGGER.info("Loaded binboutachi mod-libs.");
+		
 		DEBUG_ENABLED = true;
 		if(!DEBUG_ENABLED) {
 			return;
@@ -46,23 +55,16 @@ public class LibInit implements ModInitializer {
 				return;
 			if(!once) {
 				once = true;
-				MCUtils.sendLocalChatMessage("World save path: " + WorldUtils.getCurrentWorldSavePath());
-				MCUtils.sendLocalChatMessage(MessageType.STANDARD, "Standard");
-				MCUtils.sendLocalChatMessage(MessageType.WARNING, "Warning");
-				MCUtils.sendLocalChatMessage(MessageType.ERROR, "Error");
-				MCUtils.sendLocalChatMessage(MessageType.HALF_OPAQUE, "Half opaque");
-				var builder = new ManagedThreadBuilder();
-				builder
+				ManagedThread.builder()
 					.withFunction(() -> {
-						MCUtils.sendLocalChatMessage("done");
+						HudUtils.render(Renderable.of(Types.TEXT).positionAt(25, 25), -1);
 					})
-					.withDelay(32000)
+					.withDelay(5000)
 					.withExceptionHandler((e) -> {
 						MCUtils.sendLocalChatMessage("Oops!\n" + e.getMessage());
 					})
 					.buildAndStart();
 			}
-			MCUtils.sendLocalChatMessage("Biome name translated: " + MCUtils.getTranslatedFromTypeAndId("biome", WorldUtils.getBiomeIdByPos(client.player.getBlockPos())));
 		});
 	}
 }
