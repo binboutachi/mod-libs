@@ -19,11 +19,11 @@ public final class TimedCondition implements ExecuteCondition {
     public boolean isReached() {
         if(isPaused()) {
             if(LibInit.DEBUG_ENABLED)
-                LOGGER.info("Paused, so TimedCondition cannot be reached.");
+                LOGGER.debug("Paused, so TimedCondition cannot be reached.");
             return false;
         }
         if(LibInit.DEBUG_ENABLED)
-            LOGGER.info("isReached of TimedCondition: %b, current time: %d, timestamp: %d, delay: %d".formatted(System.currentTimeMillis() - timestamp >= delay,
+            LOGGER.debug("isReached of TimedCondition: %b, current time: %d, timestamp: %d, delay: %d".formatted(System.currentTimeMillis() - timestamp >= delay,
                                                                                                             System.currentTimeMillis(),
                                                                                                             timestamp,
                                                                                                             delay));
