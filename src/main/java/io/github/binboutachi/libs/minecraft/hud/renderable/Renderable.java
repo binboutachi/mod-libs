@@ -1,4 +1,4 @@
-package io.github.binboutachi.libs.minecraft.hud.renderables;
+package io.github.binboutachi.libs.minecraft.hud.renderable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -8,6 +8,9 @@ public abstract class Renderable<T> {
     // public record Holder<T>(T renderObject, float x, float y, int tint) {
 
     // }
+    private static class Test {
+        private int test;
+    }
     T renderObject;
     TextRenderer textRenderer;
     protected boolean centered;
@@ -19,6 +22,17 @@ public abstract class Renderable<T> {
     protected Renderable() {
         textRenderer = MinecraftClient.getInstance().textRenderer;
     }
+    /**
+     * Performs the rendering of this {@code Renderable}
+     * for the current frame it is called in. The implementation
+     * depends on the implementing type of {@code Renderable}.
+     * For example, {@code TextRenderable} draws a
+     * {@code String} as a {@code Text} with the specified
+     * properties.
+     * @param drawContext the context used for the actual
+     * rendering of the HUD element and is required to
+     * be non-{@code null}
+     */
     public abstract void draw(DrawContext drawContext);
     // public Type type();
     public float x() {
@@ -32,6 +46,12 @@ public abstract class Renderable<T> {
     }
     public T renderObject() {
         return renderObject;
+    }
+    public boolean centered() {
+        return centered;
+    }
+    public boolean castsShadow() {
+        return hasShadow;
     }
     public Renderable<T> positionAt(float x, float y) {
         this.x = x;
@@ -52,18 +72,22 @@ public abstract class Renderable<T> {
         this.renderObject = renderObject;
         return this;
     }
+    public Renderable<T> centered(boolean center) {
+        centered = center;
+        return this;
+    }
+    public Renderable<T> castsShadow(boolean castsShadow) {
+        hasShadow = true;
+        return this;
+    }
 
     @SuppressWarnings("unchecked")
-    public static <V extends Renderable<?>> V of(Type<V> t) {
+    public static <V extends Renderable<?>> V of(RenderableType<V> t) {
         V retVal = null;
         switch (t.type) {
             case TEXT:
-            case TEXT_SHADOW:
                 retVal = (V) new TextRenderable();
-            case TEXT_CENTERED:
-            case TEXT_SHADOW_CENTERED:
                 retVal = (V) new TextRenderable();
-                retVal.centered = true;
                 break;
         
             default:

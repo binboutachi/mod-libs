@@ -1,8 +1,9 @@
-package io.github.binboutachi.libs.minecraft.hud.renderables;
+package io.github.binboutachi.libs.minecraft.hud.renderable;
 
 import net.minecraft.client.gui.DrawContext;
 
 public class TextRenderable extends Renderable<String> {
+    protected float fontSize = -1;
     
     TextRenderable() {
         renderObject = "UNINITIALIZED TEXTRENDERABLE";
@@ -18,6 +19,7 @@ public class TextRenderable extends Renderable<String> {
     }
     @Override
     public String toString() {
-        return "TextRenderable[Text=\"%s\", x-pos=%f, y-pos=%f, tint=%d, shadow=%b]".formatted(renderObject, x, y, tint, hasShadow);
+        return "TextRenderable[Text=\"%s\", x-pos=%f, y-pos=%f, tint=%d, centered=%b, shadow=%b]"
+            .formatted(renderObject, x, y, tint, centered, hasShadow);
     }
 }

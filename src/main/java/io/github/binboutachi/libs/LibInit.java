@@ -13,8 +13,8 @@ import io.github.binboutachi.libs.minecraft.MCUtils;
 import io.github.binboutachi.libs.minecraft.MessageType;
 import io.github.binboutachi.libs.minecraft.hud.HudRenderCallbackHandler;
 import io.github.binboutachi.libs.minecraft.hud.HudUtils;
-import io.github.binboutachi.libs.minecraft.hud.renderables.Renderable;
-import io.github.binboutachi.libs.minecraft.hud.renderables.Types;
+import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
+import io.github.binboutachi.libs.minecraft.hud.renderable.Type;
 import io.github.binboutachi.libs.minecraft.world.WorldUtils;
 
 
@@ -57,7 +57,7 @@ public class LibInit implements ModInitializer {
 				once = true;
 				ManagedThread.builder()
 					.withFunction(() -> {
-						HudUtils.render(Renderable.of(Types.TEXT).positionAt(25, 25), -1);
+						HudUtils.render(Renderable.of(Type.TEXT).positionAt(25, 25), -1);
 					})
 					.withDelay(5000)
 					.withExceptionHandler((e) -> {

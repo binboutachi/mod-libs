@@ -2,8 +2,7 @@ package io.github.binboutachi.libs.minecraft.hud;
 
 import java.util.ArrayList;
 
-import io.github.binboutachi.libs.minecraft.hud.renderables.Renderable;
-
+import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 import net.minecraft.client.gui.DrawContext;
