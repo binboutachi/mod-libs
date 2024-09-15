@@ -24,6 +24,7 @@ public interface Renderable<T> {
     public boolean centered();
     public boolean castsShadow();
     public int fade();
+    public boolean isRendering();
     public Renderable<T> positionAt(float x, float y);
     public Renderable<T> x(float x);
     public Renderable<T> y(float y);
@@ -60,17 +61,23 @@ public interface Renderable<T> {
 
     /**
      * Called on a {@code Renderable} when it is
-     * first drawn, even when it may not be visible
-     * because of fading in or a transparent tint.
+     * first added to the HUD, notably before it
+     * is added to the queue of {@code Renderable}s
+     * to render.
      */
-    public void onFirstDraw();
+    public void onAddedToHud();
+    /**
+     * Called on a {@code Renderable} when its
+     * standard render duration has ended.
+     */
+    public void onRenderDurationEnd();
     /**
      * Called on a {@code Renderable} when it is
-     * last drawn normally, i.e. either when it would
-     * stop being rendered entirely or when its
-     * fade out animation would start.
+     * removed from the HUD. Its {@code draw()}
+     * method will not be called once this method
+     * is invoked.
      */
-    public void onLastDraw();
+    public void onRemovedFromHud();
     
     @SuppressWarnings("unchecked")
     public static <V extends Renderable<?>> V of(RenderableType<V> t) {

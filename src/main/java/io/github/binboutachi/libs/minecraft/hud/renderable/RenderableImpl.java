@@ -85,6 +85,9 @@ abstract class RenderableImpl<T> implements Renderable<T> {
     public int fade() {
         return (int) this.fadeDuration;
     }
+    public boolean isRendering() {
+        return this.beingRendered;
+    }
     public Renderable<T> positionAt(float x, float y) {
         this.x = x;
         this.y = y;
@@ -135,7 +138,7 @@ abstract class RenderableImpl<T> implements Renderable<T> {
         return this;
     }
 
-    public void onFirstDraw() {
+    public void onAddedToHud() {
         if(!(fadeDuration > 0))
             return;
         fadeTimestamp = System.currentTimeMillis();
@@ -143,8 +146,9 @@ abstract class RenderableImpl<T> implements Renderable<T> {
         fadeGoal = originalTint;
         finishedFade = false;
         tint = fadeStart;
+        beingRendered = true;
     }
-    public void onLastDraw() {
+    public void onRenderDurationEnd() {
         if(!(fadeDuration > 0))
             return;
         fadeTimestamp = System.currentTimeMillis();
@@ -152,5 +156,8 @@ abstract class RenderableImpl<T> implements Renderable<T> {
         tint = fadeStart;
         fadeGoal = (originalTint & 0x00FFFFFF);
         finishedFade = false;
+    }
+    public void onRemovedFromHud() {
+        beingRendered = false;
     }
 }
