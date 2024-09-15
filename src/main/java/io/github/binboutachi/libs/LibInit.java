@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.binboutachi.libs.async.ManagedThread;
-import io.github.binboutachi.libs.async.ManagedThreadBuilder;
 import io.github.binboutachi.libs.minecraft.MCUtils;
 import io.github.binboutachi.libs.minecraft.MessageType;
 import io.github.binboutachi.libs.minecraft.hud.HudRenderCallbackHandler;
@@ -57,7 +56,12 @@ public class LibInit implements ModInitializer {
 				once = true;
 				ManagedThread.builder()
 					.withFunction(() -> {
-						HudUtils.render(Renderable.of(Type.TEXT).positionAt(25, 25), -1);
+						HudUtils.render(
+							Renderable.of(Type.TEXT)
+								.positionAt(25, 25)
+								.fade(3000)
+								.tint(0xFFEE2222),
+							5000);
 					})
 					.withDelay(5000)
 					.withExceptionHandler((e) -> {

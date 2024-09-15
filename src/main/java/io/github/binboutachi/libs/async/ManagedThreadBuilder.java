@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.BiConsumer;
 
 import io.github.binboutachi.libs.async.conditions.ExecuteCondition;
+import io.github.binboutachi.libs.async.conditions.TautologicalCondition;
 import io.github.binboutachi.libs.async.conditions.TimedCondition;
 
 public final class ManagedThreadBuilder {
@@ -25,7 +26,10 @@ public final class ManagedThreadBuilder {
     public ManagedThread build() {
         if(f == null && c == null)
             throw new IllegalStateException("No function for the ManagedThread to run was specified.");
-        return new ManagedThread(f, c, condition, onException, onExceptionBi);
+        ExecuteCondition execCondition = condition;
+        if(condition == null)
+            execCondition = new TautologicalCondition();
+        return new ManagedThread(f, c, execCondition, onException, onExceptionBi);
     }
     /**
      * Convenience method to build and subsequently start

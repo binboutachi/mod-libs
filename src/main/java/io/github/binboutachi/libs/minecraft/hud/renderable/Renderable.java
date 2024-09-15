@@ -1,27 +1,8 @@
 package io.github.binboutachi.libs.minecraft.hud.renderable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
-public abstract class Renderable<T> {
-    // public record Holder<T>(T renderObject, float x, float y, int tint) {
-
-    // }
-    private static class Test {
-        private int test;
-    }
-    T renderObject;
-    TextRenderer textRenderer;
-    protected boolean centered;
-    protected boolean hasShadow;
-    protected float x;
-    protected float y;
-    protected int tint = 0xFFFFFF;
-
-    protected Renderable() {
-        textRenderer = MinecraftClient.getInstance().textRenderer;
-    }
+public interface Renderable<T> {
     /**
      * Performs the rendering of this {@code Renderable}
      * for the current frame it is called in. The implementation
@@ -33,60 +14,54 @@ public abstract class Renderable<T> {
      * rendering of the HUD element and is required to
      * be non-{@code null}
      */
-    public abstract void draw(DrawContext drawContext);
+    public void draw(DrawContext drawContext);
     // public Type type();
-    public float x() {
-        return x;
-    }
-    public float y() {
-        return y;
-    }
-    public int tint() {
-        return tint;
-    }
-    public T renderObject() {
-        return renderObject;
-    }
-    public boolean centered() {
-        return centered;
-    }
-    public boolean castsShadow() {
-        return hasShadow;
-    }
-    public Renderable<T> positionAt(float x, float y) {
-        this.x = x;
-        this.y = y;
-        return this;
-    }
-    public Renderable<T> x(float x) {
-        return positionAt(x, y);
-    }
-    public Renderable<T> y(float y) {
-        return positionAt(x, y);
-    }
-    public Renderable<T> tint(int tint) {
-        this.tint = tint;
-        return this;
-    }
-    public Renderable<T> renderObject(T renderObject) {
-        this.renderObject = renderObject;
-        return this;
-    }
-    public Renderable<T> centered(boolean center) {
-        centered = center;
-        return this;
-    }
-    public Renderable<T> castsShadow(boolean castsShadow) {
-        hasShadow = true;
-        return this;
-    }
-
+    public float x();
+    public float y();
+    public int tint();
+    public T renderObject();
+    public boolean centered();
+    public boolean castsShadow();
+    public int fade();
+    public Renderable<T> positionAt(float x, float y);
+    public Renderable<T> x(float x);
+    public Renderable<T> y(float y);
+    /**
+     * <p> Tints the {@code Renderable} in the given
+     * color. May have a smaller or larger effect than
+     * expected depending on the type of {@code Renderable}.
+     * A {@code TextRenderable}, for example, uses this
+     * tint to fully color the text. </p>
+     * The integer can be fed by providing a
+     * hex number in the style of standard RBG-Hexcodes.
+     * For example, pure opaque white is {@code 0xFFFFFF}.
+     * If transparency is desired, the alpha value needs
+     * to be prepended at the front like in the following
+     * example for a half-transparent black tint:
+     * {@code 0x88_000000}.
+     * @param tint the color to tint the {@code Renderable}
+     * in
+     * @return this {@code Renderable} instance
+     */
+    public Renderable<T> tint(int tint);
+    public Renderable<T> renderObject(T renderObject);
+    public Renderable<T> centered(boolean center);
+    public Renderable<T> castsShadow(boolean castsShadow);
+    /**
+     * Sets the fade duration when this {@code Renderable}
+     * is appearing or disappearing. A value smaller than
+     * {@code 0} causes fading to be omitted.
+     * @param durationMillis determines the duration of fading in
+     * milliseconds
+     * @return this {@code Renderable} instance
+     */
+    public Renderable<T> fade(int durationMillis);
+    
     @SuppressWarnings("unchecked")
     public static <V extends Renderable<?>> V of(RenderableType<V> t) {
         V retVal = null;
         switch (t.type) {
             case TEXT:
-                retVal = (V) new TextRenderable();
                 retVal = (V) new TextRenderable();
                 break;
         

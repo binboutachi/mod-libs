@@ -1,11 +1,13 @@
 package io.github.binboutachi.libs.minecraft.hud.renderable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 
-public class TextRenderable extends Renderable<String> {
+public class TextRenderable extends RenderableImpl<String> {
     protected float fontSize = -1;
     
     TextRenderable() {
+        textRenderer = MinecraftClient.getInstance().textRenderer;
         renderObject = "UNINITIALIZED TEXTRENDERABLE";
     }
 
