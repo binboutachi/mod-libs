@@ -15,6 +15,7 @@ public interface Renderable<T> {
      * be non-{@code null}
      */
     public void draw(DrawContext drawContext);
+    void drawImpl(DrawContext drawContext);
     // public Type type();
     public float x();
     public float y();
@@ -56,6 +57,20 @@ public interface Renderable<T> {
      * @return this {@code Renderable} instance
      */
     public Renderable<T> fade(int durationMillis);
+
+    /**
+     * Called on a {@code Renderable} when it is
+     * first drawn, even when it may not be visible
+     * because of fading in or a transparent tint.
+     */
+    public void onFirstDraw();
+    /**
+     * Called on a {@code Renderable} when it is
+     * last drawn normally, i.e. either when it would
+     * stop being rendered entirely or when its
+     * fade out animation would start.
+     */
+    public void onLastDraw();
     
     @SuppressWarnings("unchecked")
     public static <V extends Renderable<?>> V of(RenderableType<V> t) {

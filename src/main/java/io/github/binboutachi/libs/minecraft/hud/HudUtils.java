@@ -38,39 +38,24 @@ public class HudUtils {
     public static RenderableState render(Renderable<?> renderable, int durationMillis) {
         if(durationMillis == 0)
             return null;
-        int origTint = renderable.tint();
-        int transparentTint = renderable.tint() & 0x00FFFFFF;
-        renderable.tint(transparentTint);
+        renderable.onFirstDraw();
         HudRenderCallbackHandler.singleton.addRenderable(renderable);
-        if(renderable.fade() > 0) { // TODO do this per frame, aka call the tint change during draw() function.
-            AsyncUtils.interpolateRGBALinear(transparentTint, origTint, renderable.fade(),
-                it -> {
-                    renderable.tint(it);
-                }).thenRun(() -> {
-                    renderable.tint(origTint);
-                });
-        }
         if(durationMillis == -1) // do not schedule a removal of the HUD element in case of infinite duration
             return new RenderableState(renderable, null);
         
         final ManagedThread thread = ManagedThread.builder()
             .withFunction(thiz -> {
-                if(renderable.fade() > 0) {
-                    AsyncUtils.interpolateRGBALinear(renderable.tint(), transparentTint, renderable.fade(),
-                        it -> {
-                            renderable.tint(it);
-                        }).thenRun(() -> {
-                            HudRenderCallbackHandler.singleton.removeRenderable(renderable);
-                            if(LibInit.DEBUG_ENABLED)
-                                LOGGER.info("Removed Renderable from HUD.");
-                            removalThreads.remove(thiz);
-                        });
-                } else {
-                    HudRenderCallbackHandler.singleton.removeRenderable(renderable);
-                    if(LibInit.DEBUG_ENABLED)
-                        LOGGER.info("Removed Renderable from HUD.");
-                    removalThreads.remove(thiz);
+                renderable.onLastDraw();
+                try {
+                    Thread.sleep(renderable.fade());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    LOGGER.error("Waiting for fade to finish was interrupted.");
                 }
+                HudRenderCallbackHandler.singleton.removeRenderable(renderable);
+                if(LibInit.DEBUG_ENABLED)
+                    LOGGER.info("Removed Renderable from HUD.");
+                removalThreads.remove(thiz);
             })
             .withDelay(durationMillis + renderable.fade())
             .withExceptionHandler((e, thiz) -> {

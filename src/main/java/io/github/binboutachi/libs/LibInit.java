@@ -59,8 +59,8 @@ public class LibInit implements ModInitializer {
 						HudUtils.render(
 							Renderable.of(Type.TEXT)
 								.positionAt(25, 25)
-								.fade(3000)
-								.tint(0xFFEE2222),
+								.fade(2000)
+								.tint(0xFFFFFFFF),
 							5000);
 					})
 					.withDelay(5000)

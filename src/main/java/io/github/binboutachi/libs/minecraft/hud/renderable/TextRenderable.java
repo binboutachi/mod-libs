@@ -12,7 +12,7 @@ public class TextRenderable extends RenderableImpl<String> {
     }
 
     @Override
-    public void draw(DrawContext drawContext) {
+    public void drawImpl(DrawContext drawContext) {
         drawContext.drawText(textRenderer, renderObject,
             Math.round(centered ? x - textRenderer.getWidth(renderObject) / 2 : x),
             Math.round(centered ? y - textRenderer.getWrappedLinesHeight(renderObject, Integer.MAX_VALUE) / 2 : y),
