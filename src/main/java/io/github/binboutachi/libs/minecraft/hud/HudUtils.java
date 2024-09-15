@@ -40,6 +40,8 @@ public class HudUtils {
             return null;
         renderable.onAddedToHud();
         HudRenderCallbackHandler.singleton.addRenderable(renderable);
+        if(LibInit.DEBUG_ENABLED)
+            LOGGER.info("Added Renderable to HUD.");
         if(durationMillis == -1) // do not schedule a removal of the HUD element in case of infinite duration
             return new RenderableState(renderable, null);
         
@@ -52,8 +54,8 @@ public class HudUtils {
                     e.printStackTrace();
                     LOGGER.error("Waiting for fade to finish was interrupted.");
                 }
-                HudRenderCallbackHandler.singleton.removeRenderable(renderable);
                 renderable.onRemovedFromHud();
+                HudRenderCallbackHandler.singleton.removeRenderable(renderable);
                 if(LibInit.DEBUG_ENABLED)
                     LOGGER.info("Removed Renderable from HUD.");
                 removalThreads.remove(thiz);

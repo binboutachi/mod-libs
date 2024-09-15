@@ -2,12 +2,19 @@ package io.github.binboutachi.libs.minecraft.hud.renderable;
 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.async.ManagedThread;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
 abstract class RenderableImpl<T> implements Renderable<T> {
+    protected static final Logger LOGGER = LogManager.getLogger();
+    protected static final int FADE_MOVE_AMOUNT_Y = -99999;
+    
     T renderObject;
     TextRenderer textRenderer;
     protected boolean centered;
@@ -35,30 +42,30 @@ abstract class RenderableImpl<T> implements Renderable<T> {
     }
 
     public void draw(DrawContext drawContext) {
-        if(fadeDuration > 0l) {
-            if(System.currentTimeMillis() - fadeTimestamp <= fadeDuration) {
-                final int s_a = 0xFF & (fadeStart >> 24);
-                final int s_r = 0xFF & (fadeStart >> 16);
-                final int s_g = 0xFF & (fadeStart >> 8);
-                final int s_b = 0xFF & (fadeStart);
-                final int e_a = 0xFF & (fadeGoal  >> 24);
-                final int e_r = 0xFF & (fadeGoal  >> 16);
-                final int e_g = 0xFF & (fadeGoal  >> 8);
-                final int e_b = 0xFF & (fadeGoal);
-                final float inc_a = (e_a - s_a) / fadeDuration;
-                final float inc_r = (e_r - s_r) / fadeDuration;
-                final float inc_g = (e_g - s_g) / fadeDuration;
-                final float inc_b = (e_b - s_b) / fadeDuration;
-                final int c_a = Math.round(s_a + (inc_a * (System.currentTimeMillis() - fadeTimestamp)));
-                final int c_r = Math.round(s_r + (inc_r * (System.currentTimeMillis() - fadeTimestamp)));
-                final int c_g = Math.round(s_g + (inc_g * (System.currentTimeMillis() - fadeTimestamp)));
-                final int c_b = Math.round(s_b + (inc_b * (System.currentTimeMillis() - fadeTimestamp)));
-                tint = (c_a << 24) + (c_r << 16) + (c_g << 8) + c_b;
-            } else {
-                if(!finishedFade) {
-                    finishedFade = true;
-                    tint = fadeGoal;
-                }
+        if(fadeDuration > 0l && !finishedFade) {
+            final int s_a = 0xFF & (fadeStart >> 24);
+            final int s_r = 0xFF & (fadeStart >> 16);
+            final int s_g = 0xFF & (fadeStart >> 8);
+            final int s_b = 0xFF & (fadeStart);
+            final int e_a = 0xFF & (fadeGoal  >> 24);
+            final int e_r = 0xFF & (fadeGoal  >> 16);
+            final int e_g = 0xFF & (fadeGoal  >> 8);
+            final int e_b = 0xFF & (fadeGoal);
+            final float inc_a = (e_a - s_a) / fadeDuration;
+            final float inc_r = (e_r - s_r) / fadeDuration;
+            final float inc_g = (e_g - s_g) / fadeDuration;
+            final float inc_b = (e_b - s_b) / fadeDuration;
+            final long cTime = System.currentTimeMillis();
+            final int c_a = Math.round(s_a + (inc_a * (cTime - fadeTimestamp)));
+            final int c_r = Math.round(s_r + (inc_r * (cTime - fadeTimestamp)));
+            final int c_g = Math.round(s_g + (inc_g * (cTime - fadeTimestamp)));
+            final int c_b = Math.round(s_b + (inc_b * (cTime - fadeTimestamp)));
+            tint = (c_a << 24) | (c_r << 16) | (c_g << 8) | c_b;
+            if(Math.abs(c_a - e_a) <= 3 && Math.abs(c_r - e_r) <= 3
+            && Math.abs(c_g - e_g) <= 3 && Math.abs(c_b - e_b) <= 3) {
+                finishedFade = true;
+                tint = fadeGoal;
+                fadeTimestamp -= fadeDuration;
             }
         }
         drawImpl(drawContext);
@@ -141,20 +148,20 @@ abstract class RenderableImpl<T> implements Renderable<T> {
     public void onAddedToHud() {
         if(!(fadeDuration > 0))
             return;
-        fadeTimestamp = System.currentTimeMillis();
-        fadeStart = originalTint & 0x00FFFFFF;
+        fadeStart = 0x04000000 | (originalTint & 0x00FFFFFF);
+        // tint = fadeStart;
         fadeGoal = originalTint;
+        fadeTimestamp = System.currentTimeMillis();
         finishedFade = false;
-        tint = fadeStart;
         beingRendered = true;
     }
     public void onRenderDurationEnd() {
         if(!(fadeDuration > 0))
             return;
-        fadeTimestamp = System.currentTimeMillis();
         fadeStart = originalTint;
-        tint = fadeStart;
-        fadeGoal = (originalTint & 0x00FFFFFF);
+        // tint = fadeStart;
+        fadeGoal = 0x04000000 | (originalTint & 0x00FFFFFF);
+        fadeTimestamp = System.currentTimeMillis();
         finishedFade = false;
     }
     public void onRemovedFromHud() {

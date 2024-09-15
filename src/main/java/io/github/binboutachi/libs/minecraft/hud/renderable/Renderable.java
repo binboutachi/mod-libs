@@ -15,6 +15,17 @@ public interface Renderable<T> {
      * be non-{@code null}
      */
     public void draw(DrawContext drawContext);
+    /**
+     * This is the method to override for implementing
+     * {@code Renderable}s. It should perform the necessary
+     * rendering of the HUD element during the frame it is
+     * called in. The public {@link #draw(DrawContext)
+     * draw()} function takes care of fading in and out at
+     * the beginning and end depending on the fade duration.
+     * @param drawContext the context used for the actual
+     * rendering of the HUD element and is required to
+     * be non-{@code null}
+     */
     void drawImpl(DrawContext drawContext);
     // public Type type();
     public float x();
@@ -40,7 +51,10 @@ public interface Renderable<T> {
      * If transparency is desired, the alpha value needs
      * to be prepended at the front like in the following
      * example for a half-transparent black tint:
-     * {@code 0x88_000000}.
+     * {@code 0x88000000}. Note that HUD rendering for
+     * some reason ignores alphas values of {@code 0x03}
+     * and lower, instead drawing such elements with full
+     * opacity.
      * @param tint the color to tint the {@code Renderable}
      * in
      * @return this {@code Renderable} instance
