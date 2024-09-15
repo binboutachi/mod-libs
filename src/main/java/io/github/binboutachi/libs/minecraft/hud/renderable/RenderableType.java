@@ -1,14 +1,11 @@
-package io.github.binboutachi.libs.minecraft.hud.renderables;
+package io.github.binboutachi.libs.minecraft.hud.renderable;
 
-class Type<U extends Renderable<?>> {
+class RenderableType<U extends Renderable<?>> {
     public final Typ type;
     enum Typ {
-        TEXT,
-        TEXT_CENTERED,
-        TEXT_SHADOW,
-        TEXT_SHADOW_CENTERED;
+        TEXT;
     }
-    Type(Typ t) {
+    RenderableType(Typ t) {
         type = t;
     }
 

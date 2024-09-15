@@ -1,6 +1,7 @@
 package io.github.binboutachi.libs.async;
 
 import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.lang.Thread.Builder.OfVirtual;
 import java.util.concurrent.ThreadFactory;
 
@@ -15,10 +16,13 @@ public class ManagedThread {
     Consumer<ManagedThread> consumer;
     ExecuteCondition executeCondition;
     Consumer<Exception> onException;
+    BiConsumer<Exception, ManagedThread> onExceptionBi;
     boolean cancelled = false;
     boolean paused = false;
     Thread thread;
     private boolean wasShutdown = false;
+    private boolean done = false;
+    private boolean doneExceptionally = false;
 
     static {
         OfVirtual builder = Thread.ofVirtual();
@@ -34,32 +38,40 @@ public class ManagedThread {
                     break;
                 Thread.sleep(CHECK_DELAY);
             } catch (InterruptedException e) {
+                doneExceptionally = true;
                 if(wasShutdown)
                     return;
                 if(onException != null)
                     onException.accept(e);
                 return;
             } catch (Exception e) {
+                doneExceptionally = true;
                 // System.err.println("ManagedThread was interrupted during checking for its execution condition. The thread will now exit.");
                 if(onException != null)
                     onException.accept(e);
+                else if(onExceptionBi != null)
+                    onExceptionBi.accept(e, this);
                 return;
             }
         }
-        if(cancelled)
+        if(cancelled) {
+            doneExceptionally = true;
             return;
+        }
         // System.out.println("Execute condition reached.");
         if(consumer != null)
             consumer.accept(this);
         else
             function.run();
+        done = true;
     };
 
-    ManagedThread(Runnable f, Consumer<ManagedThread> r, ExecuteCondition c, Consumer<Exception> onExc) {
+    ManagedThread(Runnable f, Consumer<ManagedThread> r, ExecuteCondition c, Consumer<Exception> onExc, BiConsumer<Exception, ManagedThread> onExcB) {
         function = f;
         consumer = r;
         executeCondition = c;
         onException = onExc;
+        onExceptionBi = onExcB;
     }
     /**
      * Gets a {@code ManagedThreadBuilder}
@@ -119,5 +131,12 @@ public class ManagedThread {
      */
     public void unpause() {
         executeCondition.unpause();
+    }
+    /**
+     * Reports whether this {@code ManagedThread} has
+     * finished executing, regardless of circumstances.
+     */
+    public boolean isDone() {
+        return done || doneExceptionally;
     }
 }

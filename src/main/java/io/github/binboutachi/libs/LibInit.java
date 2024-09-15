@@ -17,7 +17,6 @@ public class LibInit implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static boolean DEBUG_ENABLED;
-	private boolean once = false;
 
 	static {
 		if(LOGGER.isDebugEnabled())

@@ -2,10 +2,10 @@ package io.github.binboutachi.libs.minecraft.hud;
 
 import java.util.ArrayList;
 
-import io.github.binboutachi.libs.minecraft.hud.renderables.Renderable;
-
+import io.github.binboutachi.libs.LibInit;
+import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
@@ -21,8 +21,9 @@ public class HudRenderCallbackHandler implements HudRenderCallback {
         }
     }
     void addRenderable(Renderable<?> renderable) {
-        if(!renderables.contains(renderable))
+        if(!renderables.contains(renderable)) {
             renderables.add(renderable);
+        }
     }
     void removeRenderable(Renderable<?> renderable) {
         renderables.remove(renderable);
