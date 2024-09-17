@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.async.AsyncUtils;
 import io.github.binboutachi.libs.async.ManagedThread;
+import io.github.binboutachi.libs.async.ManagedThreadBuilder;
 import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
 import io.github.binboutachi.libs.minecraft.hud.renderable.TextRenderable;
 import io.github.binboutachi.libs.minecraft.hud.renderable.Type;
@@ -16,6 +17,7 @@ public class HudUtils {
 	private static Logger LOGGER = LogManager.getLogger();
     static final int DEFAULT_RENDER_DURATION = 5000;
     private static ArrayList<ManagedThread> removalThreads = new ArrayList<>(6);
+    private static ManagedThreadBuilder mThreadBuilder = new ManagedThreadBuilder();
 
     /**
      * Renders the {@code Renderable} instance for {@code durationMillis}
@@ -45,7 +47,8 @@ public class HudUtils {
         if(durationMillis == -1) // do not schedule a removal of the HUD element in case of infinite duration
             return new RenderableState(renderable, null);
         
-        final ManagedThread thread = ManagedThread.builder()
+        mThreadBuilder.reset();
+        final ManagedThread thread = mThreadBuilder
             .withFunction(thiz -> {
                 renderable.onRenderDurationEnd();
                 try {
