@@ -15,6 +15,7 @@ public final class AsyncUtils {
     private AsyncUtils() {}
     private static ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private static ArrayList<ScheduledFuture<?>> futures = new ArrayList<>(6);
+    private static int INTERPOLATE_DURATION_LENIENCY = 1000;
     
     /**
      * Interpolates the value {@code start} linearly to {@code end} over
@@ -40,7 +41,7 @@ public final class AsyncUtils {
         final long startTime = System.currentTimeMillis();
         // final int index = futures.size();
         final CompletableFuture<?> task = CompletableFuture.runAsync(() -> {
-            while(System.currentTimeMillis() - (startTime - 1000) <= durationSecs * 1000) {
+            while(System.currentTimeMillis() - (startTime + INTERPOLATE_DURATION_LENIENCY) <= durationSecs * 1000) {
                 try {
                     final float c = start + ((System.currentTimeMillis() - startTime) * (inc / fixedDelay));
                     if((c - end) <= 0.0001f) {
@@ -81,7 +82,7 @@ public final class AsyncUtils {
         final long startTime = System.currentTimeMillis();
         // final int index = futures.size();
         final CompletableFuture<?> task = CompletableFuture.runAsync(() -> {
-            while(System.currentTimeMillis() - (startTime - 1000) <= durationMillis) {
+            while(System.currentTimeMillis() - (startTime + INTERPOLATE_DURATION_LENIENCY) <= durationMillis) {
                 try {
                     final int c_a = Math.round(s_a + ((System.currentTimeMillis() - startTime) * (inc_a / fixedDelay)));
                     final int c_r = Math.round(s_r + ((System.currentTimeMillis() - startTime) * (inc_r / fixedDelay)));
