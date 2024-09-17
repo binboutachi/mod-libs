@@ -51,8 +51,10 @@ public final class ManagedThreadBuilder {
      */
     public void reset() {
         f = null;
+        c = null;
         condition = null;
         onException = null;
+        onExceptionBi = null;
     }
     /**
      * Sets the given {@code Runnable} to be the
