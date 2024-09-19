@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.binboutachi.libs.LibInit;
-import io.github.binboutachi.libs.async.AsyncUtils;
 import io.github.binboutachi.libs.async.ManagedThread;
 import io.github.binboutachi.libs.async.ManagedThreadBuilder;
 import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
@@ -27,7 +26,12 @@ public class HudUtils {
      * for a list of available options and the
      * {@link io.github.binboutachi.libs.minecraft.hud.renderable.RenderableImpl#of(io.github.binboutachi.libs.minecraft.hud.renderable.Type)
      * Renderable.of(Type)} method to get a {@code Renderable} instance
-     * and modify it
+     * and modify it.
+     * @param <T> the encapsulated type of object to render, which varies
+     * based on the type of {@code Renderable} provided. For example, a
+     * {@code TextRenderable} has a render object type of {@code String}.
+     * @param <U> the type of the {@code Renderable} to allow for more
+     * predictable return types while using the API.
      * @param durationMillis the duration to render {@code renderable} in
      * milliseconds. specify {@code -1} for infinite duration (as in as
      * long as connected to the current server). setting {@durationMillis}
@@ -37,7 +41,8 @@ public class HudUtils {
      * callback. a duration of {@code 0} milliseconds leads to {@code null}
      * being returned instead.
      */
-    public static <T> RenderableState<T> render(Renderable<T> renderable, int durationMillis) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <T, U extends Renderable<T, U>> RenderableState<U> render(Renderable<T, U> renderable, int durationMillis) {
         if(durationMillis == 0)
             return null;
         renderable.onAddedToHud();
@@ -45,7 +50,7 @@ public class HudUtils {
         if(LibInit.DEBUG_ENABLED)
             LOGGER.info("Added Renderable to HUD.");
         if(durationMillis == -1) // do not schedule a removal of the HUD element in case of infinite duration
-            return new RenderableState<T>(renderable, null);
+            return new RenderableState(renderable, null);
         
         mThreadBuilder.reset();
         final ManagedThread thread = mThreadBuilder
@@ -70,15 +75,15 @@ public class HudUtils {
                 removalThreads.remove(thiz);
             }).buildAndStart();
         removalThreads.add(thread);
-        return new RenderableState<T>(renderable, thread);
+        return new RenderableState(renderable, thread);
     }
-    public static <T> RenderableState<T> render(Renderable<T> renderable) {
+    public static <T, U extends Renderable<T, U>> RenderableState<U> render(Renderable<T, U> renderable) {
         return render(renderable, DEFAULT_RENDER_DURATION);
     }
-    public static RenderableState<String> renderTextAt(String text, int x, int y, int durationMillis) {
+    public static RenderableState<TextRenderable> renderTextAt(String text, int x, int y, int durationMillis) {
         return render(Renderable.of(Type.TEXT).positionAt(x, y).renderObject(text), durationMillis);
     }
-    public static RenderableState<String> renderTextAt(String text, int x, int y) {
+    public static RenderableState<TextRenderable> renderTextAt(String text, int x, int y) {
         return renderTextAt(text, x, y, DEFAULT_RENDER_DURATION);
     }
 }

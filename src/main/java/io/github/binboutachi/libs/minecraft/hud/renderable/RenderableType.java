@@ -1,6 +1,6 @@
 package io.github.binboutachi.libs.minecraft.hud.renderable;
 
-class RenderableType<U extends Renderable<?>> {
+class RenderableType<U extends Renderable<?, U>> {
     public final Typ type;
     enum Typ {
         TEXT;

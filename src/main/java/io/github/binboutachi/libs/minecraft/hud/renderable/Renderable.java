@@ -2,7 +2,10 @@ package io.github.binboutachi.libs.minecraft.hud.renderable;
 
 import net.minecraft.client.gui.DrawContext;
 
-public interface Renderable<T> {
+/**
+ * @param T test
+ */
+public interface Renderable<T, U extends Renderable<T, U>> {
     /**
      * Performs the rendering of this {@code Renderable}
      * for the current frame it is called in. The implementation
@@ -36,9 +39,9 @@ public interface Renderable<T> {
     public boolean castsShadow();
     public int fade();
     public boolean isRendering();
-    public Renderable<T> positionAt(float x, float y);
-    public Renderable<T> x(float x);
-    public Renderable<T> y(float y);
+    public U positionAt(float x, float y);
+    public U x(float x);
+    public U y(float y);
     /**
      * <p> Tints the {@code Renderable} in the given
      * color. May have a smaller or larger effect than
@@ -46,7 +49,9 @@ public interface Renderable<T> {
      * A {@code TextRenderable}, for example, uses this
      * tint to fully color the text. </p>
      * The integer can be fed by providing a
-     * hex number in the style of standard RBG-Hexcodes.
+     * hex number in the style of standard RBG-Hexcodes, while
+     * the alpha value is prepended before the red, blue and
+     * green channel colors, respectively.
      * For example, pure opaque white is {@code 0xFFFFFF}.
      * If transparency is desired, the alpha value needs
      * to be prepended at the front like in the following
@@ -54,15 +59,30 @@ public interface Renderable<T> {
      * {@code 0x88000000}. Note that HUD rendering for
      * some reason ignores alphas values of {@code 0x03}
      * and lower, instead drawing such elements with full
-     * opacity.
+     * opacity. In cases where the tint should be fully
+     * opaque, it is therefore strongly recommended to
+     * set the tint's alpha value explicitly to {@code 0xFF}.
+     * This ensures proper fading in the current implementation.
      * @param tint the color to tint the {@code Renderable}
      * in
      * @return this {@code Renderable} instance
      */
-    public Renderable<T> tint(int tint);
-    public Renderable<T> renderObject(T renderObject);
-    public Renderable<T> centered(boolean center);
-    public Renderable<T> castsShadow(boolean castsShadow);
+    public U tint(int tint);
+    /**
+     * Sets the render object contained within this
+     * {@code Renderable}. Its type varies based on
+     * the type of {@code Renderable}. For instance,
+     * a {@code TextRenderable} has its render object
+     * type set to a {@code String}. For others, it
+     * may be of type {@code Texture} or
+     * {@code Identifier}.
+     * @param renderObject the new value of the
+     * render object
+     * @return this {@code Renderable} instance
+     */
+    public U renderObject(T renderObject);
+    public U centered(boolean center);
+    public U castsShadow(boolean castsShadow);
     /**
      * Sets the fade duration when this {@code Renderable}
      * is appearing or disappearing. A value smaller than
@@ -71,7 +91,7 @@ public interface Renderable<T> {
      * milliseconds
      * @return this {@code Renderable} instance
      */
-    public Renderable<T> fade(int durationMillis);
+    public U fade(int durationMillis);
 
     /**
      * Called on a {@code Renderable} when it is
@@ -94,7 +114,7 @@ public interface Renderable<T> {
     public void onRemovedFromHud();
     
     @SuppressWarnings("unchecked")
-    public static <V extends Renderable<?>> V of(RenderableType<V> t) {
+    public static <V extends Renderable<?, V>> V of(RenderableType<V> t) {
         V retVal = null;
         switch (t.type) {
             case TEXT:

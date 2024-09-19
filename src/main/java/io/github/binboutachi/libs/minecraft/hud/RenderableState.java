@@ -3,12 +3,12 @@ package io.github.binboutachi.libs.minecraft.hud;
 import io.github.binboutachi.libs.async.ManagedThread;
 import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
 
-public class RenderableState<T> {
+public class RenderableState<T extends Renderable<?, ?>> {
     private final ManagedThread thread;
-    public final Renderable<T> renderable;
+    public final T renderable;
     private boolean isRendered = true;
 
-    RenderableState(Renderable<T> r, ManagedThread t) {
+    RenderableState(T r, ManagedThread t) {
         renderable = r;
         thread = t;
     }

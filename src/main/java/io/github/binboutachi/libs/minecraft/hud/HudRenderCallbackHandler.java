@@ -12,7 +12,7 @@ import net.minecraft.client.render.RenderTickCounter;
 public class HudRenderCallbackHandler implements HudRenderCallback {
     private HudRenderCallbackHandler() {}
     public static final HudRenderCallbackHandler singleton = new HudRenderCallbackHandler();
-    private ArrayList<Renderable<?>> renderables = new ArrayList<>();
+    private ArrayList<Renderable<?, ?>> renderables = new ArrayList<>();
 
     @Override
     public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
@@ -20,12 +20,12 @@ public class HudRenderCallbackHandler implements HudRenderCallback {
             renderables.get(i).draw(drawContext);
         }
     }
-    void addRenderable(Renderable<?> renderable) {
+    void addRenderable(Renderable<?, ?> renderable) {
         if(!renderables.contains(renderable)) {
             renderables.add(renderable);
         }
     }
-    void removeRenderable(Renderable<?> renderable) {
+    void removeRenderable(Renderable<?, ?> renderable) {
         renderables.remove(renderable);
     }
 }

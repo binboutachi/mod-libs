@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.github.binboutachi.libs.LibInit;
 import io.github.binboutachi.libs.async.ManagedThread;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
-abstract class RenderableImpl<T> implements Renderable<T> {
+abstract class RenderableImpl<T, U extends Renderable<T, U>> implements Renderable<T, U> {
     protected static final Logger LOGGER = LogManager.getLogger();
     protected static final int FADE_MOVE_AMOUNT_Y = -99999;
     
@@ -21,7 +20,7 @@ abstract class RenderableImpl<T> implements Renderable<T> {
     protected boolean hasShadow;
     protected float x;
     protected float y;
-    protected int tint = 0xFFFFFF;
+    protected int tint = 0xFFFFFFFF;
     int originalTint = tint;
     protected ArrayList<ManagedThread> colorTransitions = new ArrayList<>();
     boolean beingRendered = false;
@@ -95,15 +94,16 @@ abstract class RenderableImpl<T> implements Renderable<T> {
     public boolean isRendering() {
         return this.beingRendered;
     }
-    public Renderable<T> positionAt(float x, float y) {
+    @SuppressWarnings("unchecked")
+    public U positionAt(float x, float y) {
         this.x = x;
         this.y = y;
-        return this;
+        return (U) this;
     }
-    public Renderable<T> x(float x) {
+    public U x(float x) {
         return positionAt(x, y);
     }
-    public Renderable<T> y(float y) {
+    public U y(float y) {
         return positionAt(x, y);
     }
     /**
@@ -123,26 +123,31 @@ abstract class RenderableImpl<T> implements Renderable<T> {
      * in
      * @return this {@code Renderable} instance
      */
-    public Renderable<T> tint(int tint) {
+    @SuppressWarnings("unchecked")
+    public U tint(int tint) {
         this.tint = tint;
         this.originalTint = tint;
-        return this;
+        return (U) this;
     }
-    public Renderable<T> renderObject(T renderObject) {
+    @SuppressWarnings("unchecked")
+    public U renderObject(T renderObject) {
         this.renderObject = renderObject;
-        return this;
+        return (U) this;
     }
-    public Renderable<T> centered(boolean center) {
+    @SuppressWarnings("unchecked")
+    public U centered(boolean center) {
         centered = center;
-        return this;
+        return (U) this;
     }
-    public Renderable<T> castsShadow(boolean castsShadow) {
+    @SuppressWarnings("unchecked")
+    public U castsShadow(boolean castsShadow) {
         hasShadow = castsShadow;
-        return this;
+        return (U) this;
     }
-    public Renderable<T> fade(int durationMillis) {
+    @SuppressWarnings("unchecked")
+    public U fade(int durationMillis) {
         this.fadeDuration = durationMillis;
-        return this;
+        return (U) this;
     }
 
     public void onAddedToHud() {

@@ -4,7 +4,7 @@ import io.github.binboutachi.libs.minecraft.MCUtils;
 
 import net.minecraft.client.gui.DrawContext;
 
-public class TextRenderable extends RenderableImpl<String> {
+public class TextRenderable extends RenderableImpl<String, TextRenderable> {
     protected float fontSize = -1;
     
     TextRenderable() {
@@ -24,5 +24,10 @@ public class TextRenderable extends RenderableImpl<String> {
     public String toString() {
         return "TextRenderable[Text=\"%s\", x-pos=%f, y-pos=%f, tint=%d, centered=%b, shadow=%b]"
             .formatted(renderObject, x, y, tint, centered, hasShadow);
+    }
+    @Override
+    public TextRenderable x(float x) {
+        this.x = x;
+        return this;
     }
 }
