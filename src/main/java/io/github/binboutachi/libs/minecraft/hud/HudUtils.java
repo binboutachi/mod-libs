@@ -37,7 +37,7 @@ public class HudUtils {
      * callback. a duration of {@code 0} milliseconds leads to {@code null}
      * being returned instead.
      */
-    public static RenderableState render(Renderable<?> renderable, int durationMillis) {
+    public static <T> RenderableState<T> render(Renderable<T> renderable, int durationMillis) {
         if(durationMillis == 0)
             return null;
         renderable.onAddedToHud();
@@ -45,7 +45,7 @@ public class HudUtils {
         if(LibInit.DEBUG_ENABLED)
             LOGGER.info("Added Renderable to HUD.");
         if(durationMillis == -1) // do not schedule a removal of the HUD element in case of infinite duration
-            return new RenderableState(renderable, null);
+            return new RenderableState<T>(renderable, null);
         
         mThreadBuilder.reset();
         final ManagedThread thread = mThreadBuilder
@@ -70,15 +70,15 @@ public class HudUtils {
                 removalThreads.remove(thiz);
             }).buildAndStart();
         removalThreads.add(thread);
-        return new RenderableState(renderable, thread);
+        return new RenderableState<T>(renderable, thread);
     }
-    public static RenderableState render(Renderable<?> renderable) {
+    public static <T> RenderableState<T> render(Renderable<T> renderable) {
         return render(renderable, DEFAULT_RENDER_DURATION);
     }
-    public static RenderableState renderTextAt(String text, int x, int y, int durationMillis) {
+    public static RenderableState<String> renderTextAt(String text, int x, int y, int durationMillis) {
         return render(Renderable.of(Type.TEXT).positionAt(x, y).renderObject(text), durationMillis);
     }
-    public static RenderableState renderTextAt(String text, int x, int y) {
+    public static RenderableState<String> renderTextAt(String text, int x, int y) {
         return renderTextAt(text, x, y, DEFAULT_RENDER_DURATION);
     }
 }
