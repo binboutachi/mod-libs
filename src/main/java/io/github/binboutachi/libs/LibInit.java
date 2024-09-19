@@ -32,6 +32,6 @@ public class LibInit implements ModInitializer {
 		
 		HudRenderCallback.EVENT.register(HudRenderCallbackHandler.singleton);
 		
-		LOGGER.info("Loaded binboutachi mod-libs.");
+		LOGGER.info("Loaded binboutachi mod-libs."); 
 	}
 }
