@@ -5,7 +5,7 @@ import io.github.binboutachi.libs.minecraft.hud.renderable.Renderable;
 
 public class RenderableState {
     private final ManagedThread thread;
-    private final Renderable<?> renderable;
+    public final Renderable<?> renderable;
     private boolean isRendered = true;
 
     RenderableState(Renderable<?> r, ManagedThread t) {
